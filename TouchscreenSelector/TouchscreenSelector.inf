@@ -1,0 +1,58 @@
+;
+; TouchscreenSelector.inf
+;
+
+[Version]
+Signature   = "$WINDOWS NT$"
+Class       = System
+ClassGuid   = {4d36e97d-e325-11ce-bfc1-08002be10318}
+Provider    = %ManufacturerName%
+CatalogFile = TouchscreenSelector.cat
+DriverVer   = 
+PnpLockdown = 1
+
+[DestinationDirs]
+DefaultDestDir = 13
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+TouchscreenSelector.sys  = 1,,
+
+[Manufacturer]
+%ManufacturerName% = Standard,NT$ARCH$.10.0...16299
+
+[Standard.NT$ARCH$.10.0...16299]
+%TouchscreenSelector.DeviceDesc% = TouchscreenSelector_Device, ACPI\TSSD0000
+
+[TouchscreenSelector_Device.NT]
+CopyFiles = File_Copy
+
+[File_Copy]
+TouchscreenSelector.sys
+
+;-------------- Service installation
+[TouchscreenSelector_Device.NT.Services]
+AddService = TouchscreenSelector,%SPSVCINST_ASSOCSERVICE%, TouchscreenSelector_Service_Inst
+
+; -------------- TouchscreenSelector driver install sections
+[TouchscreenSelector_Service_Inst]
+DisplayName    = %TouchscreenSelector.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %13%\TouchscreenSelector.sys
+
+[TouchscreenSelector_Device.NT.Wdf]
+KmdfService = TouchscreenSelector, TouchscreenSelector_wdfsect
+
+[TouchscreenSelector_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE = 0x00000002
+ManufacturerName = "Nikroks"
+DiskName = "TouchscreenSelector Installation Disk"
+TouchscreenSelector.DeviceDesc = "TouchscreenSelector Device"
+TouchscreenSelector.SVCDESC = "TouchscreenSelector Device"
